@@ -97,6 +97,7 @@ class ADFSOAuth2(BaseOAuth2):
         return response
 
     def get_user_id(self, details, response):
+        # FIXME: shouldn't this just be the norEduPersonLIN we specifically request it?
         return str(UUID(bytes_le=b64decode(self.token_payload.get('ppid'))))
 
     def get_user_details(self, response):
@@ -124,8 +125,9 @@ class LiuBackend(ADFSOAuth2):
     DEFAULT_HOST = 'fs.liu.se'
     DEFAULT_X509_CERT = LIU_X509_CERT
 
-    def user_data(self, access_token, *args, **kwargs):
+    def extra_data(self, user, uid, response, details, pipeline_kwargs):
         return dict(
+            auth_time=self.token_payload.get('auth_time'),
             nor_edu_person_lin=self.token_payload.get(
                 'http://liu.se/claims/norEduPersonLIN')
         )
