@@ -17,6 +17,8 @@ class ADFSOAuth2(BaseOAuth2):
 
     ACCESS_TOKEN_METHOD = 'POST'
     SCOPE_PARAMETER_NAME = 'resource'
+    # ADFS requires the exact registered redirect_uri; CSRF is covered by state.
+    REDIRECT_STATE = False
 
     DEFAULT_HOST = None
     DEFAULT_X509_CERT = None
@@ -62,23 +64,7 @@ class ADFSOAuth2(BaseOAuth2):
                 key=self.get_token_key(),
                 leeway=self.setting('LEEWAY', 0),
                 iss=self.issuer_url(),
-                algorithms=[
-                    "HS256",
-                    "HS384",
-                    "HS512",
-                    "RS256",
-                    "RS384",
-                    "RS512",
-                    "ES256",
-                    "ES256K",
-                    "ES384",
-                    "ES521",
-                    "ES512",
-                    "PS256",
-                    "PS384",
-                    "PS512",
-                    "EdDSA",
-                ],
+                algorithms=["RS256"],
                 options=dict(
                     verify_signature=True,
                     verify_exp=True,
